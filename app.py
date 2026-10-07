@@ -29,6 +29,7 @@ def simular():
         ws_inputs = wb["INPUTS"]
         ws_inputs["A1"] = a1
         ws_inputs["A2"] = a2
+	
 	wb.active = wb["OUTPUTS"]
 
         # 3. Guardar el Excel modificado en la carpeta temporal
