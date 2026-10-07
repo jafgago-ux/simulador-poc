@@ -6,9 +6,11 @@ from openpyxl import load_workbook
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route("/simular", methods=["POST"])
 def simular():
@@ -29,25 +31,38 @@ def simular():
         ws_inputs = wb["INPUTS"]
         ws_inputs["A1"] = a1
         ws_inputs["A2"] = a2
-	
-        wb.active = wb["OUTPUTS"]
 
-        # 3. Guardar el Excel modificado en la carpeta temporal
+        # 3. Activar OUTPUTS y ocultar INPUTS para que solo salga OUTPUTS en el PDF
+        wb.active = wb["OUTPUTS"]
+        ws_inputs.sheet_state = "hidden"
+
+        # 4. Guardar el Excel modificado en la carpeta temporal
         excel_modificado = td_path / "modificado.xlsx"
         wb.save(excel_modificado)
 
-        # 4. Ejecutar LibreOffice para recalcular y convertir a PDF
-        subprocess.run([
-            "soffice",
-            "--headless",
-            "--convert-to", "pdf:calc_pdf_Export",
-            "--outdir", str(td_path),
-            str(excel_modificado)
-        ], check=True, timeout=120)
+        # 5. Ejecutar LibreOffice para recalcular y convertir a PDF
+        subprocess.run(
+            [
+                "soffice",
+                "--headless",
+                "--convert-to",
+                "pdf:calc_pdf_Export",
+                "--outdir",
+                str(td_path),
+                str(excel_modificado),
+            ],
+            check=True,
+            timeout=120,
+        )
 
-        # 5. Enviar el PDF al navegador
+        # 6. Enviar el PDF al navegador
         pdf_path = td_path / "modificado.pdf"
-        return send_file(pdf_path, as_attachment=True, download_name="resultado.pdf")
+        return send_file(
+            pdf_path,
+            as_attachment=True,
+            download_name="resultado.pdf",
+        )
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
