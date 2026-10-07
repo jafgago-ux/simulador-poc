@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador</title>
+</head>
+<body>
+    <h1>Simulador</h1>
+    <p>Introduce dos números enteros y descarga el PDF con el resultado.</p>
+
+    <form action="/simular" method="post">
+        <label>Número 1 (celda A1):</label>
+        <input type="number" name="a1" required>
+        <br><br>
+        <label>Número 2 (celda A2):</label>
+        <input type="number" name="a2" required>
+        <br><br>
+        <button type="submit">Calcular y descargar PDF</button>
+    </form>
+</body>
+</html>
